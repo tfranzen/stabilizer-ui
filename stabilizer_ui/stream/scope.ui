@@ -44,6 +44,13 @@
        </property>
       </widget>
      </item>
+      <item>
+      <widget class="QCheckBox" name="en_xy_box">
+       <property name="text">
+        <string>XY</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QCheckBox" name="en_fft_box">
        <property name="text">

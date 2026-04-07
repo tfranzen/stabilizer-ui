@@ -82,6 +82,16 @@ class UiWindow(AbstractUiWindow):
             settings_map[StabilizerSettings.afes[ch].path()] = UiMqttConfig(
                 [self.channels[ch].afeGainBox])
 
+            settings_map[StabilizerSettings.fgens[ch].amplitude.path()] = UiMqttConfig(
+                [self.channels[ch].fgenAmpBox])
+            
+            settings_map[StabilizerSettings.fgens[ch].signal.path()] = UiMqttConfig(
+                [self.channels[ch].fgenWaveformBox])
+
+            settings_map[StabilizerSettings.fgens[ch].frequency.path()] = UiMqttConfig(
+                [self.channels[ch].fgenFreqBox])
+
+
             # IIR settings
             for iir in range(NUM_IIR_FILTERS_PER_CHANNEL):
                 iirWidget = self.channels[ch].iir_widgets[iir]

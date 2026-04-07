@@ -18,27 +18,27 @@ Apart from these base parameters, each application may define additional paramet
 
 from .mqtt import NetworkAddress
 
-broker_255_6_4 = NetworkAddress.from_str_ip("10.255.6.4", 1883)
-wand_lab1 = NetworkAddress.from_str_ip("10.255.6.61", 3251)
+broker = NetworkAddress.from_str_ip("192.168.1.171", 1883)
+#wand_lab1 = NetworkAddress.from_str_ip("10.255.6.61", 3251)
 
 stabilizer_devices = {}
-stabilizer_devices["lab1_729"] = {
-    "mac-address": "68-27-19-80-72-9e",
-    "application": "fnc",
-    "broker": broker_255_6_4,
-}
+#stabilizer_devices["lab1_729"] = {
+#    "mac-address": "68-27-19-80-72-9e",
+#    "application": "fnc",
+#    "broker": broker_255_6_4,
+#}
 
-stabilizer_devices["lab1_674"] = {
-    "mac-address": "80-1f-12-5d-47-df",
-    "application": "l674",
-    "broker": broker_255_6_4,
-    "wand-address": wand_lab1,
-    "wand-channel": "lab1_674",
-    "solstis-host": "10.179.22.23",
-}
+#stabilizer_devices["lab1_674"] = {
+#    "mac-address": "80-1f-12-5d-47-df",
+#    "application": "l674",
+#    "broker": broker_255_6_4,
+#    "wand-address": wand_lab1,
+#    "wand-channel": "lab1_674",
+#    "solstis-host": "10.179.22.23",
+#}
 
-stabilizer_devices["lab1_raman_phaselock"] = {
-    "mac-address": "44-b7-d0-c7-7d-24",
+stabilizer_devices["stabilizer1"] = {
+    "mac-address": "fc-0f-e7-34-fb-fa",
     "application": "dual_iir",
-    "broker": broker_255_6_4,
+    "broker": broker,
 }

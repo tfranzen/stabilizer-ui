@@ -16,11 +16,16 @@ class AbstractChannelSettings(QtWidgets.QWidget):
     """
     afe_options = ["G1", "G2", "G5", "G10"]
 
+    waveform_options = ["Triangle", "Cosine", "Square", "WhiteNoise"]
+
     def __init__(self):
         super().__init__()
 
     def _add_afe_options(self):
         self.afeGainBox.addItems(self.afe_options)
+
+    def _add_waveform_options(self):
+        self.fgenWaveformBox.addItems(self.waveform_options)
 
     def _add_iir_tabWidget(self, sample_period):
         self.iir_widgets = [_IIRWidget(sample_period), _IIRWidget(sample_period)]
@@ -40,6 +45,7 @@ class ChannelSettings(AbstractChannelSettings):
                          "widgets/channel_settings.ui"), self)
 
         self._add_afe_options()
+        self._add_waveform_options()
         self._add_iir_tabWidget(sample_period)
 
 

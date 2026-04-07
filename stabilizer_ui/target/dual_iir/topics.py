@@ -16,12 +16,17 @@ class StabilizerSettings:
     def set(cls):
         cls.root = TopicTree("settings")
 
-        (afe, cls.iir_root) = cls.root.create_children(["afe", "iir_ch"])
+        (afe, cls.iir_root, fgen) = cls.root.create_children(["afe", "iir_ch", "signal_generator"])
 
         cls.iir_root.create_children(["0", "1"])
 
         cls.stream_target = cls.root.create_child("stream_target")
         cls.afes = afe.create_children(["0", "1"])
+
+        cls.fgens = fgen.create_children(["0", "1"])
+
+        for f in cls.fgens:
+            (f.signal, f.frequency, f.amplitude) = f.create_children(['signal', 'frequency', 'amplitude'])
 
         # iir_ch/0/1 represents the IIR filter 1 for channel 0
         cls.iirs = [

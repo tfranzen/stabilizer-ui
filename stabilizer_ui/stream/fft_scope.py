@@ -11,7 +11,7 @@ from . import MAX_BUFFER_PERIOD, SCOPE_TIME_SCALE
 
 #: Interval between scope plot updates, in seconds.
 #: PyQt's drawing speed limits value.
-DEFAULT_SCOPE_UPDATE_PERIOD = 0.05  # 20 fps
+DEFAULT_SCOPE_UPDATE_PERIOD = 0.02 
 
 GRAPHICSLAYOUT_BORDER_WIDTH = 0.2
 LEGEND_OFFSET = (-10, 10)
@@ -71,9 +71,45 @@ class FftScope(QtWidgets.QWidget):
             },
         } for unit in parser.units()]
 
-        def update_axes(button_checked):
+        self.xy_config =            [ {
+                "ylabel": "ADC / V",
+                "xlabel": "DAC / V",
+                "log": [False, False],
+                "xrange": self.DEFAULT_Y_RANGE,
+                "yrange": self.DEFAULT_Y_RANGE,
+            },
+            {
+                "ylabel": "ADC / V",
+                "xlabel": "DAC / V",
+                "log": [False, False],
+                "xrange": self.DEFAULT_Y_RANGE,
+                "yrange": self.DEFAULT_Y_RANGE,
+            },
+            {
+                "ylabel": f"Amplitude / V",
+                "xlabel": "Time / ms",
+                "log": [False, False],
+                "xrange": self.DEFAULT_FFT_X_RANGE,
+                "yrange": self.DEFAULT_Y_RANGE,
+            },
+            {
+                "ylabel": f"Amplitude / V",
+                "xlabel": "Time / ms",
+                "log": [False, False],
+                "xrange": self.DEFAULT_FFT_X_RANGE,
+                "yrange": self.DEFAULT_Y_RANGE,
+            },]
+
+
+       
+
+        def update_axes(button_checked_):
+            button_checked = self.en_fft_box.isChecked()
             for (i, plt) in enumerate(scope_plot_items):
-                cfg = self.scope_config[i][bool(button_checked)]
+                if self.en_xy_box.isChecked():
+                    cfg = self.xy_config[i]
+                else:
+                    cfg = self.scope_config[i][bool(button_checked)]
                 plt.setLogMode(*cfg["log"])
                 plt.setRange(xRange=cfg["xrange"], yRange=cfg["yrange"], update=False)
                 plt.setLabels(left=cfg["ylabel"], bottom=cfg["xlabel"])
@@ -86,6 +122,7 @@ class FftScope(QtWidgets.QWidget):
             0, 0.5 / self.sample_period, floor((self.buf_len + 1) / 2)) * SCOPE_TIME_SCALE
 
         self.en_fft_box.stateChanged.connect(update_axes)
+        self.en_xy_box.stateChanged.connect(update_axes)
         update_axes(self.en_fft_box.isChecked())
 
     def update(self, payload: CallbackPayload):
@@ -102,6 +139,8 @@ class FftScope(QtWidgets.QWidget):
         """Transforms data into payload values recognised by `update()`"""
 
         def _preconditioner(data: Iterable):
+            if self.en_xy_box.isChecked():
+                    return [(data[2], data[0]), (data[3],data[1]), (self.sample_times,data[2]), (self.sample_times, data[3]) ]
             if self.en_fft_box.isChecked():
                 return [
                     (self.spectrum_frequencies, np.abs(np.fft.rfft(buf * self.hamming)) *
