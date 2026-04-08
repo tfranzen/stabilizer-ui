@@ -16,7 +16,7 @@ class StabilizerSettings:
     def set(cls):
         cls.root = TopicTree("settings")
 
-        (afe, cls.iir_root, fgen) = cls.root.create_children(["afe", "iir_ch", "signal_generator"])
+        (afe, cls.iir_root, fgen, cls.pounder) = cls.root.create_children(["afe", "iir_ch", "signal_generator", "pounder"])
 
         cls.iir_root.create_children(["0", "1"])
 
@@ -34,6 +34,16 @@ class StabilizerSettings:
                 [f"{ch}/{iir}" for iir in range(NUM_IIR_FILTERS_PER_CHANNEL)])
             for ch in range(NUM_CHANNELS)
         ]
+
+        # Pounder settings
+        pounder_channels = cls.pounder.create_children(["0", "1"])
+
+        for topic in [
+                "frequency_dds_out", "frequency_dds_in", "amplitude_dds_out",
+                "amplitude_dds_in", "attenuation_out", "attenuation_in", "phase_dds_in", "phase_dds_out"
+        ]:
+            setattr(cls, f"{topic}s",
+                    [pounder_ch.create_child(topic) for pounder_ch in pounder_channels])
 
 
 StabilizerSettings.set()
@@ -53,7 +63,9 @@ class UiSettings:
                 [f"iir{iir}" for iir in range(NUM_IIR_FILTERS_PER_CHANNEL)])
             for ch in range(NUM_CHANNELS)
         ]
-
+        cls.dds_io_link_checkboxes = [
+            ui_channels[ch].create_child("dds_in_checkbox") for ch in range(NUM_CHANNELS)
+        ]
         for ch in range(NUM_CHANNELS):
             for iir in range(NUM_IIR_FILTERS_PER_CHANNEL):
                 cls.iirs[ch][iir].create_children(

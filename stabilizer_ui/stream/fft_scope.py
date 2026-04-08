@@ -11,7 +11,7 @@ from . import MAX_BUFFER_PERIOD, SCOPE_TIME_SCALE
 
 #: Interval between scope plot updates, in seconds.
 #: PyQt's drawing speed limits value.
-DEFAULT_SCOPE_UPDATE_PERIOD = 0.02 
+DEFAULT_SCOPE_UPDATE_PERIOD = 0.05  # 20 fps
 
 GRAPHICSLAYOUT_BORDER_WIDTH = 0.2
 LEGEND_OFFSET = (-10, 10)

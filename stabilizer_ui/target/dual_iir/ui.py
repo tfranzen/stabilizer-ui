@@ -10,6 +10,8 @@ from ...mqtt import NetworkAddress, UiMqttConfig
 from ...iir.channel_settings import ChannelSettings
 from ...stream.fft_scope import FftScope
 
+from ...utils import mega
+
 
 #
 # Parameters for the FNC ui.
@@ -91,6 +93,28 @@ class UiWindow(AbstractUiWindow):
             settings_map[StabilizerSettings.fgens[ch].frequency.path()] = UiMqttConfig(
                 [self.channels[ch].fgenFreqBox])
 
+            settings_map[StabilizerSettings.attenuation_ins[ch].path()] = UiMqttConfig(
+                [self.channels[ch].ddsInAttenuationBox])
+            settings_map[StabilizerSettings.attenuation_outs[ch].path()] = UiMqttConfig(
+                [self.channels[ch].ddsOutAttenuationBox])
+
+            settings_map[StabilizerSettings.amplitude_dds_ins[ch].path()] = UiMqttConfig(
+                [self.channels[ch].ddsInAmplitudeBox])
+            settings_map[StabilizerSettings.amplitude_dds_outs[ch].path()] = UiMqttConfig(
+                [self.channels[ch].ddsOutAmplitudeBox])
+
+            settings_map[StabilizerSettings.phase_dds_ins[ch].path()] = UiMqttConfig(
+                [self.channels[ch].ddsInPhaseBox])
+            settings_map[StabilizerSettings.phase_dds_outs[ch].path()] = UiMqttConfig(
+                [self.channels[ch].ddsOutPhaseBox])
+
+            settings_map[StabilizerSettings.frequency_dds_outs[ch].path()] = UiMqttConfig(
+                [self.channels[ch].ddsOutFrequencyBox], *mega)
+            settings_map[StabilizerSettings.frequency_dds_ins[ch].path()] = UiMqttConfig(
+                [self.channels[ch].ddsInFrequencyBox], *mega)
+
+            settings_map[UiSettings.dds_io_link_checkboxes[ch].path()] = UiMqttConfig(
+                [self.channels[ch].ddsIoFreqLinkCheckBox])
 
             # IIR settings
             for iir in range(NUM_IIR_FILTERS_PER_CHANNEL):
