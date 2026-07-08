@@ -68,6 +68,17 @@ class ChannelSettings(AbstractChannelSettings):
         self.ddsInAttenuationBox.valueChanged.connect(self._snapAttenuationValue)
         self.ddsOutAttenuationBox.valueChanged.connect(self._snapAttenuationValue)
 
+    def connect_to_lockpoint(self, i, f):
+        def _update(x):
+            f(i,x)
+
+        self.lockpointBox.valueChanged.connect(_update)
+
+    def connect_to_offset(self, i, f):
+        def _update(x):
+            f(i,x)
+        self.inputOffsetBox.valueChanged.connect(_update)
+
     def _linkDdsIoFrequencies(self, _):
         """Link DDS In frequency to 2x DDS Out frequency if enabled, otherwise allow
         manual setting. Attached to the stateChanged signal of the ddsIoFreqLinkCheckBox.

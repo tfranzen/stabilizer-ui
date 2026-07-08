@@ -1,5 +1,6 @@
 import os
 from PyQt6 import QtWidgets, uic
+import pyqtgraph
 from stabilizer.stream import Parser
 import numpy as np
 import numpy.fft
@@ -49,6 +50,18 @@ class FftScope(QtWidgets.QWidget):
         legends = [plt.addLegend(offset=LEGEND_OFFSET) for plt in scope_plot_items]
         # Create the objects holding the data to plot.
         self._scope_plot_data_items = [plt.plot() for plt in scope_plot_items]
+
+        redpen = pyqtgraph.mkPen('r')
+        self._scope_lockpoint_indicators = [plt.plot([0,0], [-10,10], pen = redpen) for plt in scope_plot_items[:2]]
+
+        self._scope_offset_indicators = [plt.plot([-10,10], [0,0], pen = redpen) for plt in scope_plot_items[:2]]
+
+        def ignore_bounds(*args, **kwargs):
+            return None
+
+        for l in self._scope_lockpoint_indicators + self._scope_offset_indicators:
+            l.dataBounds = ignore_bounds
+
         for legend, item, title in zip(legends, self._scope_plot_data_items,
                                        parser.StreamData._fields):
             legend.addItem(item, title)
@@ -135,6 +148,7 @@ class FftScope(QtWidgets.QWidget):
         for plot, data in zip(self._scope_plot_data_items, data_to_show):
             plot.setData(*data)
 
+
     def precondition_data(self):
         """Transforms data into payload values recognised by `update()`"""
 
@@ -150,3 +164,12 @@ class FftScope(QtWidgets.QWidget):
                 return [(self.sample_times, buf) for buf in data]
 
         return _preconditioner
+
+
+    def update_lockpoint(self, index, lockpoint):
+        self._scope_lockpoint_indicators[index].setData([lockpoint, lockpoint], [-10,10])
+
+    
+    def update_inputoffset(self, index, offset):
+        self._scope_offset_indicators[index].setData([-10,10], [-offset, -offset])
+

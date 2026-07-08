@@ -57,6 +57,11 @@ class UiWindow(AbstractUiWindow):
             self.fftScopeWidget.graphics_view.getItem(
                 1, i).setYRange(*DEFAULT_DAC_PLOT_YRANGE)
 
+
+        for i, channel in enumerate(self.channels):
+            channel.connect_to_lockpoint(i, self.fftScopeWidget.update_lockpoint)
+            channel.connect_to_offset(i, self.fftScopeWidget.update_inputoffset)
+
         # Disable mouse wheel scrolling on spinboxes to prevent accidental changes
         spinboxes = self.channelTabWidget.findChildren(QtWidgets.QDoubleSpinBox)
         for box in spinboxes:
