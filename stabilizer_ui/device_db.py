@@ -38,7 +38,13 @@ stabilizer_devices = {}
 #}
 
 stabilizer_devices["stabilizer1"] = {
-    "mac-address": "fc-0f-e7-34-fb-fa",
+    "mac-address": "fc-0f-e7-35-17-4f",
     "application": "dual_iir",
+    "broker": broker,
+}
+
+stabilizer_devices["fnc"] = {
+    "mac-address": "fc-0f-e7-34-fb-ff",
+    "application": "fnc",
     "broker": broker,
 }
