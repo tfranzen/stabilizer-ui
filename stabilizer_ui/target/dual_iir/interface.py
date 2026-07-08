@@ -4,6 +4,8 @@ from stabilizer import DEFAULT_DUAL_IIR_SAMPLE_PERIOD
 from .topics import app_root, StabilizerSettings
 from ...interface import AbstractStabilizerInterface
 
+from . import *
+
 logger = logging.getLogger(__name__)
 
 
@@ -15,7 +17,7 @@ class StabilizerInterface(AbstractStabilizerInterface):
     iir_ch_topic_base = StabilizerSettings.iir_root.path()
 
     def __init__(self):
-        super().__init__(DEFAULT_DUAL_IIR_SAMPLE_PERIOD, app_root)
+        super().__init__(DEFAULT_DUAL_IIR_SAMPLE_PERIOD*SAMPLE_PERIOD_REDUCTION, app_root)
         self.stream_target_topic = StabilizerSettings.stream_target.path(
             from_app_root=False)
 

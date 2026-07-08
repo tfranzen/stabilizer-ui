@@ -193,6 +193,10 @@ class UiWindow(AbstractUiWindow):
             settings_map[StabilizerSettings.afes[ch].path()] = UiMqttConfig(
                 [self.channels[ch].afeGainBox])
 
+            settings_map[StabilizerSettings.input_offset[ch].path()] = UiMqttConfig(
+                [self.channels[ch].inputOffsetBox])
+
+
             settings_map[StabilizerSettings.attenuation_ins[ch].path()] = UiMqttConfig(
                 [self.channels[ch].ddsInAttenuationBox])
             settings_map[StabilizerSettings.attenuation_outs[ch].path()] = UiMqttConfig(

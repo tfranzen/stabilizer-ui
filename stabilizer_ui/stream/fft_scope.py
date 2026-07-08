@@ -119,7 +119,7 @@ class FftScope(QtWidgets.QWidget):
                                         self.buf_len) / SCOPE_TIME_SCALE
         self.hamming = np.hamming(self.buf_len)
         self.spectrum_frequencies = np.linspace(
-            0, 0.5 / self.sample_period, floor((self.buf_len + 1) / 2)) * SCOPE_TIME_SCALE
+            0, 0.5 / self.sample_period, floor((self.buf_len + 1) / 2 +.5)) * SCOPE_TIME_SCALE
 
         self.en_fft_box.stateChanged.connect(update_axes)
         self.en_xy_box.stateChanged.connect(update_axes)

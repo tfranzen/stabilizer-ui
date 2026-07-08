@@ -9,13 +9,17 @@ from .filters import FILTERS
 from ..mqtt import UiMqttConfig
 from ..utils import link_spinbox_to_is_inf_checkbox, kilo, kilo2
 
+from ..target.dual_iir import NUM_IIR_FILTERS_PER_CHANNEL
+
+
+
 
 class AbstractChannelSettings(QtWidgets.QWidget):
     """ Abstract class for creating custom channel widgets.
     Sets up AFE gains and IIR filter settings.
     """
     afe_options = ["G1", "G2", "G5", "G10"]
-
+    n_FIR = 4
     waveform_options = ["Triangle", "Cosine", "Square", "WhiteNoise"]
 
     def __init__(self):
@@ -28,7 +32,7 @@ class AbstractChannelSettings(QtWidgets.QWidget):
         self.fgenWaveformBox.addItems(self.waveform_options)
 
     def _add_iir_tabWidget(self, sample_period):
-        self.iir_widgets = [_IIRWidget(sample_period), _IIRWidget(sample_period)]
+        self.iir_widgets = [_IIRWidget(sample_period) for i in range(NUM_IIR_FILTERS_PER_CHANNEL)]
         for i, iir in enumerate(self.iir_widgets):
             self.IIRTabs.addTab(iir, f"Filter {i}")
 

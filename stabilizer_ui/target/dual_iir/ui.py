@@ -31,14 +31,14 @@ class UiWindow(AbstractUiWindow):
     def __init__(self, title: str = "Dual IIR"):
         super().__init__()
         self.setWindowTitle(title)
-
+        print([DEFAULT_DUAL_IIR_SAMPLE_PERIOD,SAMPLE_PERIOD_REDUCTION])
         # Set main window layout
         splitter = QtWidgets.QSplitter(self)
         self.setCentralWidget(splitter)
 
         # Create UI for channel settings.
         self.channels = [
-            ChannelSettings(DEFAULT_DUAL_IIR_SAMPLE_PERIOD) for _ in range(NUM_CHANNELS)
+            ChannelSettings(DEFAULT_DUAL_IIR_SAMPLE_PERIOD*SAMPLE_PERIOD_REDUCTION) for _ in range(NUM_CHANNELS)
         ]
 
         self.channelTabWidget = QtWidgets.QTabWidget()
@@ -48,7 +48,7 @@ class UiWindow(AbstractUiWindow):
 
         # Create UI for FFT scope.
         streamParser = Parser([AdcDecoder(), DacDecoder()])
-        self.fftScopeWidget = FftScope(streamParser, DEFAULT_DUAL_IIR_SAMPLE_PERIOD)
+        self.fftScopeWidget = FftScope(streamParser, DEFAULT_DUAL_IIR_SAMPLE_PERIOD*SAMPLE_PERIOD_REDUCTION)
         splitter.addWidget(self.fftScopeWidget)
 
         for i in range(NUM_CHANNELS):
@@ -83,6 +83,9 @@ class UiWindow(AbstractUiWindow):
         for ch in range(NUM_CHANNELS):
             settings_map[StabilizerSettings.afes[ch].path()] = UiMqttConfig(
                 [self.channels[ch].afeGainBox])
+
+            settings_map[StabilizerSettings.input_offset[ch].path()] = UiMqttConfig(
+                [self.channels[ch].inputOffsetBox])
 
             settings_map[StabilizerSettings.fgens[ch].amplitude.path()] = UiMqttConfig(
                 [self.channels[ch].fgenAmpBox])

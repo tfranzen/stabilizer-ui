@@ -3,7 +3,6 @@ from ...topic_tree import TopicTree
 from ...iir.filters import FILTERS
 
 from . import *
-
 logger = logging.getLogger(__name__)
 
 
@@ -16,9 +15,11 @@ class StabilizerSettings:
     def set(cls):
         cls.root = TopicTree("settings")
 
-        (afe, cls.iir_root, fgen, cls.pounder) = cls.root.create_children(["afe", "iir_ch", "signal_generator", "pounder"])
+        (afe, input_offset, cls.iir_root, fgen, cls.pounder) = cls.root.create_children(["afe", "input_offset", "iir_ch", "signal_generator", "pounder"])
 
-        cls.iir_root.create_children(["0", "1"])
+        cls.input_offset = input_offset.create_children(["0", "1", ])
+
+        cls.iir_root.create_children(["0", "1", ])
 
         cls.stream_target = cls.root.create_child("stream_target")
         cls.afes = afe.create_children(["0", "1"])
