@@ -87,6 +87,7 @@ class UiWindow(AbstractUiWindow):
             settings_map[StabilizerSettings.input_offset[ch].path()] = UiMqttConfig(
                 [self.channels[ch].inputOffsetBox])
 
+
             settings_map[StabilizerSettings.fgens[ch].amplitude.path()] = UiMqttConfig(
                 [self.channels[ch].fgenAmpBox])
             
@@ -95,6 +96,16 @@ class UiWindow(AbstractUiWindow):
 
             settings_map[StabilizerSettings.fgens[ch].frequency.path()] = UiMqttConfig(
                 [self.channels[ch].fgenFreqBox])
+
+            settings_map[StabilizerSettings.lockboxes[ch].enable.path()] = UiMqttConfig(
+                [self.channels[ch].LockBoxEnableCheckBox])
+
+            settings_map[StabilizerSettings.lockboxes[ch].lockpoint.path()] = UiMqttConfig(
+                [self.channels[ch].lockpointBox])
+
+            settings_map[StabilizerSettings.lockboxes[ch].state_request.path()] = UiMqttConfig(
+                [self.channels[ch].lockstateBox])
+
 
             settings_map[StabilizerSettings.attenuation_ins[ch].path()] = UiMqttConfig(
                 [self.channels[ch].ddsInAttenuationBox])

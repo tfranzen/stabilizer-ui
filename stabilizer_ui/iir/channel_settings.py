@@ -21,6 +21,7 @@ class AbstractChannelSettings(QtWidgets.QWidget):
     afe_options = ["G1", "G2", "G5", "G10"]
     n_FIR = 4
     waveform_options = ["Triangle", "Cosine", "Square", "WhiteNoise"]
+    lockstate_options = ['SCANNING', 'LOCKED']
 
     def __init__(self):
         super().__init__()
@@ -35,6 +36,9 @@ class AbstractChannelSettings(QtWidgets.QWidget):
         self.iir_widgets = [_IIRWidget(sample_period) for i in range(NUM_IIR_FILTERS_PER_CHANNEL)]
         for i, iir in enumerate(self.iir_widgets):
             self.IIRTabs.addTab(iir, f"Filter {i}")
+
+    def _add_lockstate_options(self):
+        self.lockstateBox.addItems(self.lockstate_options)
 
 
 class ChannelSettings(AbstractChannelSettings):
@@ -51,6 +55,7 @@ class ChannelSettings(AbstractChannelSettings):
         self._add_afe_options()
         self._add_waveform_options()
         self._add_iir_tabWidget(sample_period)
+        self._add_lockstate_options()
 
         # Checkbox to fix DDS In frequency to 2x DDS Out (double pass AOM)
         self.ddsIoFreqLinkCheckBox.stateChanged.connect(self._linkDdsIoFrequencies)

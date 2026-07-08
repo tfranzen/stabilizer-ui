@@ -15,7 +15,7 @@ class StabilizerSettings:
     def set(cls):
         cls.root = TopicTree("settings")
 
-        (afe, input_offset, cls.iir_root, fgen, cls.pounder) = cls.root.create_children(["afe", "input_offset", "iir_ch", "signal_generator", "pounder"])
+        (afe, input_offset, cls.iir_root, fgen, cls.pounder, lockbox) = cls.root.create_children(["afe", "input_offset", "iir_ch", "signal_generator", "pounder", "lockbox"])
 
         cls.input_offset = input_offset.create_children(["0", "1", ])
 
@@ -25,9 +25,14 @@ class StabilizerSettings:
         cls.afes = afe.create_children(["0", "1"])
 
         cls.fgens = fgen.create_children(["0", "1"])
+        cls.lockboxes = lockbox.create_children(["0", "1"])
 
         for f in cls.fgens:
             (f.signal, f.frequency, f.amplitude) = f.create_children(['signal', 'frequency', 'amplitude'])
+
+        for l in cls.lockboxes:
+            (l.enable, l.lockpoint, l.state_request) = l.create_children(['enable', 'lock_point', 'state_request'])
+
 
         # iir_ch/0/1 represents the IIR filter 1 for channel 0
         cls.iirs = [
