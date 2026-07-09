@@ -62,6 +62,8 @@ class UiWindow(AbstractUiWindow):
             channel.connect_to_lockpoint(i, self.fftScopeWidget.update_lockpoint)
             channel.connect_to_offset(i, self.fftScopeWidget.update_inputoffset)
 
+        self.fftScopeWidget.lockpoint_callback = self.lockpointclick
+
         # Disable mouse wheel scrolling on spinboxes to prevent accidental changes
         spinboxes = self.channelTabWidget.findChildren(QtWidgets.QDoubleSpinBox)
         for box in spinboxes:
@@ -71,6 +73,10 @@ class UiWindow(AbstractUiWindow):
 
     def update_stream(self, payload):
         self.fftScopeWidget.update(payload)
+
+
+    def lockpointclick(self, i, x):
+        self.channels[i].lockpointBox.setValue(x)
 
     def set_mqtt_configs(self, stream_target: NetworkAddress):
         """ Link the UI widgets to the MQTT topic tree"""

@@ -38,7 +38,7 @@ class FftScope(QtWidgets.QWidget):
         self.DEFAULT_FFT_X_RANGE = (-0.5,
                                     -np.log10(0.5 * SCOPE_TIME_SCALE / sample_period))
 
-        scope_plot_items = [
+        self.scope_plot_items = [
             self.graphics_view.addPlot(row=i, col=j) for i in range(2) for j in range(2)
         ]
         # Maximise space utilisation.
@@ -47,14 +47,17 @@ class FftScope(QtWidgets.QWidget):
         self.graphics_view.centralWidget.setBorder(width=GRAPHICSLAYOUT_BORDER_WIDTH)
 
         # Use legend instead of title to save space.
-        legends = [plt.addLegend(offset=LEGEND_OFFSET) for plt in scope_plot_items]
+        legends = [plt.addLegend(offset=LEGEND_OFFSET) for plt in self.scope_plot_items]
         # Create the objects holding the data to plot.
-        self._scope_plot_data_items = [plt.plot() for plt in scope_plot_items]
+        self._scope_plot_data_items = [plt.plot() for plt in self.scope_plot_items]
 
         redpen = pyqtgraph.mkPen('r')
-        self._scope_lockpoint_indicators = [plt.plot([0,0], [-10,10], pen = redpen) for plt in scope_plot_items[:2]]
+        self._scope_lockpoint_indicators = [plt.plot([0,0], [-10,10], pen = redpen) for plt in self.scope_plot_items[:2]]
 
-        self._scope_offset_indicators = [plt.plot([-10,10], [0,0], pen = redpen) for plt in scope_plot_items[:2]]
+        self._scope_offset_indicators = [plt.plot([-10,10], [0,0], pen = redpen) for plt in self.scope_plot_items[:2]]
+
+
+        self.lockpoint_callback = None
 
         def ignore_bounds(*args, **kwargs):
             return None
@@ -118,7 +121,7 @@ class FftScope(QtWidgets.QWidget):
 
         def update_axes(button_checked_):
             button_checked = self.en_fft_box.isChecked()
-            for (i, plt) in enumerate(scope_plot_items):
+            for (i, plt) in enumerate(self.scope_plot_items):
                 if self.en_xy_box.isChecked():
                     cfg = self.xy_config[i]
                 else:
@@ -137,6 +140,9 @@ class FftScope(QtWidgets.QWidget):
         self.en_fft_box.stateChanged.connect(update_axes)
         self.en_xy_box.stateChanged.connect(update_axes)
         update_axes(self.en_fft_box.isChecked())
+
+
+        self.graphics_view.scene().sigMouseClicked.connect(self.on_mouse_clicked)
 
     def update(self, payload: CallbackPayload):
         """Callback for the stream thread"""
@@ -167,9 +173,24 @@ class FftScope(QtWidgets.QWidget):
 
 
     def update_lockpoint(self, index, lockpoint):
+        """ Update lockpoint indicators in xy graphs """
         self._scope_lockpoint_indicators[index].setData([lockpoint, lockpoint], [-10,10])
 
     
     def update_inputoffset(self, index, offset):
+        """ Update offset indicators in ADC graphs """
         self._scope_offset_indicators[index].setData([-10,10], [-offset, -offset])
+
+    def on_mouse_clicked(self, event):
+        """ capture clicks on xy plots and set lockpoint from click coordinates """
+        if self.en_xy_box.isChecked():
+            scene_pos = event.scenePos()
+            for i,p in enumerate(self.scope_plot_items[:2]):
+                if p.vb.sceneBoundingRect().contains(scene_pos):
+                    data_pos = p.vb.mapSceneToView(scene_pos)
+                    x_val = data_pos.x()
+                    if self.lockpoint_callback:
+                        self.lockpoint_callback(i, x_val)
+
+                
 
